@@ -2,9 +2,9 @@
 <!--
   MSIX manifest template. build-msix.ps1 fills in the {{...}} placeholders.
 
-  For a Store submission, Identity Name, Publisher and PublisherDisplayName must match
-  Partner Center (Product identity page). Set them as repository variables:
-  MSIX_IDENTITY_NAME, MSIX_PUBLISHER, MSIX_PUBLISHER_DISPLAY_NAME.
+  Identity Name, Publisher, PublisherDisplayName and DisplayName must match Partner Center
+  (Product identity page and the reserved app name). The defaults live in build-msix.ps1;
+  the MSIX_* environment variables override them.
 
   Restricted capabilities (Partner Center asks you to justify each one):
   - runFullTrust: a regular desktop app.
@@ -23,7 +23,7 @@
   <Identity Name="{{IDENTITY_NAME}}" Publisher="{{PUBLISHER}}" Version="{{VERSION}}" ProcessorArchitecture="x64" />
 
   <Properties>
-    <DisplayName>Lowtide</DisplayName>
+    <DisplayName>{{DISPLAY_NAME}}</DisplayName>
     <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
     <desktop6:FileSystemWriteVirtualization>disabled</desktop6:FileSystemWriteVirtualization>
@@ -41,7 +41,7 @@
   <Applications>
     <Application Id="Lowtide" Executable="Lowtide.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
-        DisplayName="Lowtide"
+        DisplayName="{{DISPLAY_NAME}}"
         Description="Reclaim the disk space your dev tools quietly ate"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
