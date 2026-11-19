@@ -1,0 +1,17 @@
+[package]
+name = "lowtide-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+rayon.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+tauri = { version = "2.12.7", features = [] }
+tauri-plugin-dialog = "2.8.4"
+lowtide-core.workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2.7.6", features = [] }
