@@ -17,9 +17,12 @@ param(
     [Parameter(Mandatory = $true)][string]$Exe,
     [Parameter(Mandatory = $true)][string]$Version,
     [string]$OutDir = "dist",
-    [string]$IdentityName = $(if ($env:MSIX_IDENTITY_NAME) { $env:MSIX_IDENTITY_NAME } else { "Lowtide" }),
-    [string]$Publisher = $(if ($env:MSIX_PUBLISHER) { $env:MSIX_PUBLISHER } else { "CN=Lowtide Test" }),
-    [string]$PublisherDisplayName = $(if ($env:MSIX_PUBLISHER_DISPLAY_NAME) { $env:MSIX_PUBLISHER_DISPLAY_NAME } else { "Lowtide" }),
+    # Store identity from Partner Center > Product identity. MSIX_* environment variables override.
+    [string]$IdentityName = $(if ($env:MSIX_IDENTITY_NAME) { $env:MSIX_IDENTITY_NAME } else { "AskDesk.LowtideDiskCleanerforDevelopers" }),
+    [string]$Publisher = $(if ($env:MSIX_PUBLISHER) { $env:MSIX_PUBLISHER } else { "CN=BF455968-388C-4E7C-883A-65AB9DC9CAB7" }),
+    [string]$PublisherDisplayName = $(if ($env:MSIX_PUBLISHER_DISPLAY_NAME) { $env:MSIX_PUBLISHER_DISPLAY_NAME } else { "AskDesk" }),
+    # Must match the name reserved in Partner Center exactly.
+    [string]$DisplayName = $(if ($env:MSIX_DISPLAY_NAME) { $env:MSIX_DISPLAY_NAME } else { "Lowtide: Disk Cleaner for Developers" }),
     [switch]$TestSign
 )
 
@@ -64,6 +67,7 @@ $esc = { param($s) [System.Security.SecurityElement]::Escape($s) }
 $manifest = Get-Content (Join-Path $PSScriptRoot "AppxManifest.xml") -Raw
 $manifest = $manifest.Replace("{{IDENTITY_NAME}}", (& $esc $IdentityName))
 $manifest = $manifest.Replace("{{PUBLISHER_DISPLAY_NAME}}", (& $esc $PublisherDisplayName))
+$manifest = $manifest.Replace("{{DISPLAY_NAME}}", (& $esc $DisplayName))
 $manifest = $manifest.Replace("{{PUBLISHER}}", (& $esc $Publisher))
 $manifest = $manifest.Replace("{{VERSION}}", $msixVersion)
 [System.IO.File]::WriteAllText((Join-Path $layout "AppxManifest.xml"), $manifest, (New-Object System.Text.UTF8Encoding $false))

@@ -83,9 +83,10 @@ The release workflow also packages the app as MSIX (`crates/gui/msix/`) and uplo
 `msix` workflow artifact. Run it manually from the Actions tab to build without releasing.
 
 - `Lowtide-<version>-x64.msix`: unsigned, upload this to Partner Center (the Store signs it).
-  Set the repository variables `MSIX_IDENTITY_NAME`, `MSIX_PUBLISHER` and
-  `MSIX_PUBLISHER_DISPLAY_NAME` to the values on Partner Center's *Product identity* page.
+  It carries the Store identity of *Lowtide: Disk Cleaner for Developers* (defaults in
+  `build-msix.ps1`, overridable with the `MSIX_*` repository variables).
 - `Lowtide-<version>-x64-test.msix` + `Lowtide-test.cer`: self-signed, for testing on your own PC.
+  It has the same identity as the Store app, so uninstall it before installing from the Store.
   From an elevated PowerShell:
 
 ```
