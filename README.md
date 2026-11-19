@@ -77,6 +77,25 @@ cargo test
 cd crates/gui && npm install && npm run build   # desktop app + installer
 ```
 
+### MSIX (Microsoft Store)
+
+The release workflow also packages the app as MSIX (`crates/gui/msix/`) and uploads it as the
+`msix` workflow artifact. Run it manually from the Actions tab to build without releasing.
+
+- `Lowtide-<version>-x64.msix`: unsigned, upload this to Partner Center (the Store signs it).
+  Set the repository variables `MSIX_IDENTITY_NAME`, `MSIX_PUBLISHER` and
+  `MSIX_PUBLISHER_DISPLAY_NAME` to the values on Partner Center's *Product identity* page.
+- `Lowtide-<version>-x64-test.msix` + `Lowtide-test.cer`: self-signed, for testing on your own PC.
+  From an elevated PowerShell:
+
+```
+Import-Certificate -FilePath Lowtide-test.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+Add-AppxPackage Lowtide-<version>-x64-test.msix
+```
+
+Build locally with `./crates/gui/msix/build-msix.ps1 -Exe target/release/lowtide-app.exe -Version 0.2.0 -TestSign`
+(needs the Windows SDK).
+
 ## License
 
 MIT
