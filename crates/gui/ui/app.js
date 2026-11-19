@@ -381,7 +381,7 @@ const VIEWS = {
     mount() {
       return `
         <header class="page-head">
-          <div><h1>Caches</h1><p>Copies your tools downloaded or generated. Everything marked <b>Safe</b> regenerates on its own, so it's pre-selected.</p></div>
+          <div><h1>Caches</h1><p>Copies of files your tools downloaded or generated. Everything marked <b>Safe</b> regenerates on its own, so it's pre-selected.</p></div>
           <div class="head-actions">
             <div class="seg" id="cache-filter"></div>
             <button class="icon-btn" data-action="rescan" title="Rescan">${icon("refresh", "sm")}</button>
