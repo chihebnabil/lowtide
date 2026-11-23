@@ -8,17 +8,20 @@
 
   Restricted capabilities (Partner Center asks you to justify each one):
   - runFullTrust: a regular desktop app.
-  - unvirtualizedResources + FileSystemWriteVirtualization=disabled: Lowtide deletes
-    other apps' caches under AppData. With virtualization on, those operations may be
-    redirected to a private per-app folder and silently do nothing.
-  - allowElevation: "Restart as admin" for Windows Temp, Windows Update and system caches.
+
+  Deliberately NOT requested (the Store denies them, policy 10.6.3):
+  - unvirtualizedResources: not needed on Windows 10 1903+ (the MinVersion below). There,
+    only *new* files in AppData are redirected; deletes and edits of existing files, which
+    is all Lowtide does to other apps' caches, reach the real AppData.
+  - allowElevation: the Store build never elevates. shell::is_packaged() hides
+    "Restart as admin", so the few system locations (Windows Temp, Windows Update,
+    Delivery Optimization) are skipped. The installer and the CLI still offer them.
 -->
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
-  IgnorableNamespaces="uap rescap desktop6">
+  IgnorableNamespaces="uap rescap">
 
   <Identity Name="{{IDENTITY_NAME}}" Publisher="{{PUBLISHER}}" Version="{{VERSION}}" ProcessorArchitecture="x64" />
 
@@ -26,11 +29,10 @@
     <DisplayName>{{DISPLAY_NAME}}</DisplayName>
     <PublisherDisplayName>{{PUBLISHER_DISPLAY_NAME}}</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <desktop6:FileSystemWriteVirtualization>disabled</desktop6:FileSystemWriteVirtualization>
   </Properties>
 
   <Dependencies>
-    <!-- 1903 is the first version that honours FileSystemWriteVirtualization. -->
+    <!-- 1903+: deletes of existing files under AppData are not virtualized. -->
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.18362.0" MaxVersionTested="10.0.26100.0" />
   </Dependencies>
 
@@ -51,7 +53,5 @@
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
-    <rescap:Capability Name="unvirtualizedResources" />
-    <rescap:Capability Name="allowElevation" />
   </Capabilities>
 </Package>

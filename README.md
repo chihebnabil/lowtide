@@ -94,6 +94,10 @@ Import-Certificate -FilePath Lowtide-test.cer -CertStoreLocation Cert:\LocalMach
 Add-AppxPackage Lowtide-<version>-x64-test.msix
 ```
 
+The Store build asks only for `runFullTrust` and never elevates: "Restart as admin" is hidden and the
+few system locations (Windows Temp, Windows Update downloads, Delivery Optimization cache) are skipped.
+Use the installer from Releases, or `lowtide` in an elevated terminal, to clean those.
+
 Build locally with `./crates/gui/msix/build-msix.ps1 -Exe target/release/lowtide-app.exe -Version 0.2.0 -TestSign`
 (needs the Windows SDK).
 

@@ -114,6 +114,8 @@ const cacheBytes = () => S.caches.reduce((s, c) => s + (c.status === "ready" || 
 const safeCaches = () => S.caches.filter((c) => cacheSelectable(c) && c.risk === "safe");
 const projectBytes = () => S.artifacts.reduce((s, a) => s + (a.status === "done" ? 0 : a.bytes), 0);
 const adminCaches = () => S.caches.filter((c) => c.status === "admin");
+// False in the Microsoft Store build, which runs without administrator rights by design.
+const canElevate = () => S.info?.canElevate !== false;
 
 function cacheGroups() {
   const filter = S.cacheFilter;
@@ -213,6 +215,10 @@ function renderChrome() {
   if (S.info?.elevated) {
     line.className = "admin-line on";
     setHTML(line, `${icon("shield-check", "sm")}<span>Admin mode</span>`);
+  } else if (!canElevate()) {
+    line.className = "admin-line off";
+    line.title = "System folders that need administrator rights are skipped in this version.";
+    setHTML(line, `${icon("shield", "sm")}<span>Standard mode</span>`);
   } else {
     const n = adminCaches().length;
     line.className = "admin-line can";
@@ -371,7 +377,9 @@ const VIEWS = {
       setHTML(
         $("ov-admin"),
         locked.length && !S.info?.elevated
-          ? `<div class="note">${icon("lock", "sm")}<span>${locked.map((c) => esc(c.name)).join(", ")} ${locked.length > 1 ? "need" : "needs"} administrator rights to scan.</span><button class="link" data-action="admin">Restart as admin</button></div>`
+          ? canElevate()
+            ? `<div class="note">${icon("lock", "sm")}<span>${locked.map((c) => esc(c.name)).join(", ")} ${locked.length > 1 ? "need" : "needs"} administrator rights to scan.</span><button class="link" data-action="admin">Restart as admin</button></div>`
+            : `<div class="note">${icon("lock", "sm")}<span>${locked.map((c) => esc(c.name)).join(", ")} ${locked.length > 1 ? "are system folders that need" : "is a system folder that needs"} administrator rights, so this version skips ${locked.length > 1 ? "them" : "it"}.</span></div>`
           : "",
       );
     },
@@ -554,7 +562,7 @@ function cacheItemHTML(c) {
     ? `<div class="kv"><h4>This session</h4><p class="freed-line">Freed ${human(c.freed.freed)}</p>${c.freed.skipped ? `<p>${c.freed.skipped} file(s) were in use and skipped. Close the app and clean again.</p>` : ""}</div>`
     : "";
   const admin = c.status === "admin"
-    ? `<div class="kv full"><h4>Locked</h4><p>Windows only lets administrators read this folder. <button class="link" data-action="admin">Restart as admin</button></p></div>`
+    ? `<div class="kv full"><h4>Locked</h4><p>Windows only lets administrators read this folder.${canElevate() ? ` <button class="link" data-action="admin">Restart as admin</button>` : " This version runs without administrator rights, so it skips it."}</p></div>`
     : "";
   return `<div class="item${open ? " open" : ""}${!sel && c.status !== "cleaning" ? " dim" : ""}" data-key="${esc(c.id)}">
     <div class="item-main" data-action="expand">
@@ -797,7 +805,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 async function relaunchAdmin() {
-  if (S.info?.elevated) return;
+  if (S.info?.elevated || !canElevate()) return;
   const ok = await invoke("relaunch_as_admin");
   if (!ok) toast("Administrator restart was cancelled.");
 }

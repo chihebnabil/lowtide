@@ -35,9 +35,25 @@ pub fn is_elevated() -> bool {
     unsafe { windows_sys::Win32::UI::Shell::IsUserAnAdmin() != 0 }
 }
 
-/// Start this executable again with a UAC prompt. Returns false if the user declined.
+/// Whether this process runs with MSIX package identity (the Microsoft Store build).
+/// The Store build must never elevate, so callers hide "Restart as admin" when this is true.
+#[cfg(windows)]
+pub fn is_packaged() -> bool {
+    use windows_sys::Win32::Foundation::APPMODEL_ERROR_NO_PACKAGE;
+    use windows_sys::Win32::Storage::Packaging::Appx::GetCurrentPackageFullName;
+    let mut len = 0u32;
+    // SAFETY: a zero-length query with a null buffer only reports the required length.
+    let rc = unsafe { GetCurrentPackageFullName(&mut len, std::ptr::null_mut()) };
+    rc != APPMODEL_ERROR_NO_PACKAGE
+}
+
+/// Start this executable again with a UAC prompt. Returns false if the user declined,
+/// or if this is the packaged Store build, which never elevates.
 #[cfg(windows)]
 pub fn relaunch_elevated(args: &str) -> bool {
+    if is_packaged() {
+        return false;
+    }
     let Ok(exe) = std::env::current_exe() else { return false };
     shell_execute("runas", &exe.to_string_lossy(), (!args.is_empty()).then_some(args))
 }
@@ -68,6 +84,11 @@ pub fn reveal(path: &Path) -> bool {
 
 #[cfg(not(windows))]
 pub fn is_elevated() -> bool {
+    false
+}
+
+#[cfg(not(windows))]
+pub fn is_packaged() -> bool {
     false
 }
 

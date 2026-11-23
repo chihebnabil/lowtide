@@ -106,6 +106,7 @@ button:disabled { cursor: default; }
 .admin-line { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-3); padding: 2px 8px; text-align: left; }
 .admin-line.can:hover { color: var(--amber); }
 .admin-line.on { color: var(--teal); cursor: default; }
+.admin-line.off { cursor: default; }
 .version { font-size: 11px; color: var(--text-3); padding: 0 8px; opacity: 0.7; }
 
 .main { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
