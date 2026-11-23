@@ -64,7 +64,7 @@ Run from an elevated terminal (or click **Restart as admin** in the app) to incl
 - **Docker & WSL:** compact the `.vhdx` disks that grow but never shrink. The free app already shows how big yours are.
 - **Autopilot:** weekly cleaning, low-disk alerts, rules for idle projects, and space history.
 
-Everything above stays free.
+Everything above stays free. [Join the waitlist](https://forms.gle/B9AavYZjFwtehyRF8) to hear when Pro launches.
 
 ## Build
 

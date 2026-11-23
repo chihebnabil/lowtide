@@ -1,7 +1,7 @@
 // Lowtide desktop UI. Plain JS on purpose: no build step, nothing to audit but this file.
 
-// Set this to your waitlist form (Tally, Typeform, Google Forms...) before shipping.
-const WAITLIST_URL = "https://tally.so/r/YOUR-FORM-ID";
+// Lowtide Pro waitlist (Google Form). Opened in the default browser on request only.
+const WAITLIST_URL = "https://forms.gle/B9AavYZjFwtehyRF8";
 const STALE_DAYS = 30;
 
 const { invoke } = window.__TAURI__.core;
@@ -810,9 +810,9 @@ async function relaunchAdmin() {
   if (!ok) toast("Administrator restart was cancelled.");
 }
 
-function openWaitlist() {
-  if (WAITLIST_URL.includes("YOUR-FORM-ID")) return toast("The Lowtide Pro waitlist opens soon. Thanks for the interest!");
-  invoke("open_url", { url: WAITLIST_URL });
+async function openWaitlist() {
+  const ok = await invoke("open_url", { url: WAITLIST_URL });
+  if (!ok) toast("Couldn't open your browser. The waitlist is at forms.gle/B9AavYZjFwtehyRF8");
 }
 
 $("admin-line").addEventListener("click", relaunchAdmin);
