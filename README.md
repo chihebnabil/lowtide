@@ -7,6 +7,20 @@
 <p align="center"><b>See what your dev tools left behind, and wash it away.</b><br>
 A free, open-source disk cleaner for developers on Windows.</p>
 
+<p align="center">
+  <a href="https://apps.microsoft.com/detail/9PP5RCMJPK03"><img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" alt="Get it from Microsoft" /></a>
+</p>
+
+<p align="center">
+  <a href="https://apps.microsoft.com/detail/9PP5RCMJPK03">Microsoft Store</a> ·
+  <a href="../../releases/latest">Installer &amp; CLI</a> ·
+  <a href="#install">Which one?</a>
+</p>
+
+<p align="center">
+  <img src="docs/overview.png" width="900" alt="Lowtide overview: 105 GB of caches and build folders found, grouped by AI/ML, JavaScript, Python, Rust and more" />
+</p>
+
 ---
 
 Every `npm install`, `cargo build`, `pip install`, Playwright download and Hugging Face model
@@ -32,6 +46,10 @@ what `%LOCALAPPDATA%\uv\cache` is.
   - **Review**: permanent, look first
 - **Recycle Bin mode** for project folders, so you can change your mind.
 
+<p align="center">
+  <img src="docs/caches.png" width="900" alt="Caches page: each cache with a plain-English description, a risk label (Safe or Re-download) and its size" />
+</p>
+
 ## Safety
 
 - Only known cache folders are touched. Never settings, logins, cookies, extensions, chat history or source code.
@@ -43,7 +61,16 @@ what `%LOCALAPPDATA%\uv\cache` is.
 
 ## Install
 
-Download the installer from [Releases](../../releases), or build it yourself (see below).
+| | [Microsoft Store](https://apps.microsoft.com/detail/9PP5RCMJPK03) | [Installer from Releases](../../releases/latest) |
+|---|---|---|
+| Install | No warnings, updates automatically | `Lowtide-<version>-setup.exe` |
+| All user caches and project folders | ✅ | ✅ |
+| Windows Temp, Windows Update, Delivery Optimization | Skipped (runs without admin) | ✅ with **Restart as admin** |
+| `lowtide` command line and terminal UI | No | ✅ (`lowtide-cli-*.zip`) |
+
+**Most people should use the Store version.** Get the installer if you want the system locations
+or the command line. The installer isn't code-signed yet, so Windows SmartScreen may warn you:
+click **More info → Run anyway**. You can also build it yourself (see below).
 
 ## Command line
 
@@ -57,7 +84,8 @@ lowtide projects D:\code --older-than 30            # stale build folders
 lowtide projects D:\code --older-than 30 --clean --recycle
 ```
 
-Run from an elevated terminal (or click **Restart as admin** in the app) to include system locations.
+Run from an elevated terminal (or click **Restart as admin** in the installer version of the app) to
+include system locations.
 
 ## Lowtide Pro (coming soon)
 
@@ -94,9 +122,7 @@ Import-Certificate -FilePath Lowtide-test.cer -CertStoreLocation Cert:\LocalMach
 Add-AppxPackage Lowtide-<version>-x64-test.msix
 ```
 
-The Store build asks only for `runFullTrust` and never elevates: "Restart as admin" is hidden and the
-few system locations (Windows Temp, Windows Update downloads, Delivery Optimization cache) are skipped.
-Use the installer from Releases, or `lowtide` in an elevated terminal, to clean those.
+The Store build asks only for the `runFullTrust` capability and never elevates (see [Install](#install)).
 
 Build locally with `./crates/gui/msix/build-msix.ps1 -Exe target/release/lowtide-app.exe -Version 0.2.0 -TestSign`
 (needs the Windows SDK).
