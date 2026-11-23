@@ -2253,7 +2253,7 @@ checksum = "5d15f86d12da44cd8d4ec3c73984537eb7f4cadcb9776a575a0a8a05ca11005c"
 
 [[package]]
 name = "lowtide"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -2264,7 +2264,7 @@ dependencies = [
 
 [[package]]
 name = "lowtide-app"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "lowtide-core",
  "rayon",
@@ -2277,7 +2277,7 @@ dependencies = [
 
 [[package]]
 name = "lowtide-core"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "rayon",
  "serde",

@@ -104,6 +104,8 @@ struct ProjectCleaned {
 struct Info {
     version: &'static str,
     elevated: bool,
+    /// False in the Microsoft Store (MSIX) build, which must not elevate.
+    can_elevate: bool,
     projects_root: String,
     recycle_projects: bool,
 }
@@ -114,6 +116,7 @@ fn get_info() -> Info {
     Info {
         version: env!("CARGO_PKG_VERSION"),
         elevated: shell::is_elevated(),
+        can_elevate: !shell::is_packaged(),
         projects_root: s.projects_root().display().to_string(),
         recycle_projects: s.recycle_projects,
     }
